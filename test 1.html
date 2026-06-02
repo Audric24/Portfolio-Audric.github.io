@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Audric Morvannou</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;       
+            --card-bg: #1e293b;        
+            --primary-color: #38bdf8;   
+            --text-color: #f8fafc;      
+            --text-muted: #94a3b8;     
+            --nav-bg: rgba(15, 23, 42, 0.8); 
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        .cursor-glow {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+            pointer-events: none; 
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            mix-blend-mode: screen;
+            border-radius: 50%;
+            transition: transform 0.08s ease-out;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-bottom: 1px solid #334155;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.8rem;
+            color: var(--primary-color);
+            letter-spacing: 1px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        nav {
+            background: var(--nav-bg);
+            backdrop-filter: blur(10px); 
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: center;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav a {
+            color: var(--text-color);
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--primary-color);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* --- CLASSE REVEAL POUR L'APPARITION AU DÉFILEMENT --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        section {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 1px solid #334155;
+            padding-bottom: 0.5rem;
+            margin-top: 0;
+        }
+
+        .profile-container {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .profile-pic {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 3px solid var(--primary-color);
+            object-fit: cover;
+            background-color: #334155; 
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .profile-pic:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-text {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        ul {
+            padding-left: 1.2rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        .competence-wrapper {
+            position: relative;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            overflow: hidden;
+            padding: 2px; 
+            background: #334155; 
+            transition: transform 0.3s ease, opacity 0.8s ease-out;
+        }
+
+        .competence-wrapper:hover {
+            transform: translateY(-3px);
+        }
+
+        .competence-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(transparent, transparent, transparent, #38bdf8);
+            animation: rotate-border 3s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 0;
+        }
+
+        .competence-wrapper:hover::before {
+            opacity: 1; 
+        }
+
+        .competence-inner {
+            position: relative;
+            background: #111827;
+            padding: 1.5rem;
+            border-radius: 6px;
+            z-index: 1;
+            height: 100%;
+        }
+
+        @keyframes rotate-border {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .competence-inner h3 {
+            margin-top: 0;
+            color: var(--text-color);
+            border-left: 4px solid var(--primary-color);
+            padding-left: 10px;
+        }
+
+        .competence-inner p {
+            color: var(--text-muted);
+            margin: 0.5rem 0;
+        }
+
+        .competence-inner strong {
+            color: var(--primary-color);
+        }
+        
+        .project-details {
+            margin-top: 1.5rem;
+        }
+
+        .btn-details {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: #0f172a;
+            padding: 0.5rem 1.5rem;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            list-style: none; 
+            transition: background 0.3s, transform 0.2s;
+            user-select: none;
+        }
+
+        .btn-details::-webkit-details-marker {
+            display: none;
+        }
+
+        .btn-details:hover {
+            background-color: #7dd3fc;
+            transform: scale(1.02);
+        }
+
+        .details-content {
+            margin-top: 1rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 6px;
+            border-top: 1px solid #334155;
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-15px); }
+        }
+
+        .gallery {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .gallery-item {
+            width: 200px;
+            height: 130px;
+            background-color: #1e293b;
+            border: 1px dashed #334155;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item img:hover {
+            transform: scale(1.05);
+        }
+
+        /* --- STYLES LIGHTBOX (AGRANDISSEMENT IMAGE) --- */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightbox.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90vh;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(56, 189, 248, 0.3);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .lightbox.active img {
+            transform: scale(1);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            color: var(--text-muted);
+            font-size: 3rem;
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.3s;
+        }
+
+        .lightbox-close:hover {
+            color: var(--primary-color);
+        }
+
+        .contact-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .contact-list li {
+            margin-bottom: 0.8rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: #0f172a;
+            border-top: 1px solid #334155;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor-glow" id="glow"></div>
+
+    <header>
+        <h1>Audric Morvannou</h1>
+        <p>Étudiant en BUT Informatique | Athlète en quête de performance</p>
+    </header>
+
+    <nav>
+        <a href="#presentation">Présentation</a>
+        <a href="#formation">Formation</a>
+        <a href="#competences">Compétences</a>
+        <a href="#contact">Contact</a>
+    </nav>
+
+    <div class="container">
+        
+        <section id="presentation" class="reveal">
+            <h2>À propos de moi</h2>
+            <div class="profile-container">
+                <img src="Image/Photo.png" alt="Photo de Audric Morvannou" class="profile-pic" onerror="this.style.display='none'; this.parentNode.innerHTML='<div class=\'profile-pic\'></div>'">
+                
+                <div class="profile-text">
+                    <p>Étudiant en première année de BUT Informatique à l'IUT de Lannion, je suis un athlète engagé vers le haut niveau sur la piste. Dans le code comme dans le sport, l'analyse minutieuse de la performance, la gestion de l'effort et la détermination face aux obstacles sont mes moteurs quotidiens pour mener à bien mes projets informatiques.</p>
+                    <h3>Mes objectifs</h3>
+                    <ul>
+                        <li><strong>Projet professionnel :</strong> Devenir un développeur backend ou data complet, capable de concevoir des systèmes optimisés et résilients.</li>
+                        <li><strong>Opportunité :</strong> À la recherche active d'un stage ou d'un contrat en alternance pour intégrer mon esprit de compétition et ma rigueur au sein d'une équipe tech.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="formation" class="reveal">
+            <h2>Ma Formation & Diplômes</h2>
+            <ul>
+                <li><strong>2025 - Présent :</strong> BUT Informatique (1ère année) - IUT de Lannion</li>
+                <li><strong>2025 :</strong> Baccalauréat Général (Spécialités Mathématiques et Physique-Chimie) - Lycée Eugène Freyssinet (Saint-Brieuc)</li>
+            </ul>
+        </section>
+
+        <section id="competences" class="reveal">
+            <h2>Mes 6 Compétences en Informatique</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">Démonstration et justification des compétences acquises à travers mes projets du semestre 1.</p>
+
+            <div class="competence-wrapper reveal">
+                <div class="competence-inner">
+                    <h3>Compétence 1 : Réaliser le développement d'applications</h3>
+                    <p><strong>Mes traces :</strong> SAÉ 1.01 (Jeu du Sokoban en C) et Projet Web (Conception du site sur le Royaume-Uni en HTML/CSS).</p>
+                    <p><strong>Preuves de réussite :</strong> Implémentation complète de fonctionnalités avancées pour le Sokoban (gestion dynamique des niveaux de zoom, mémorisation des états et module d'annulation). Conception de pages web structurées respectant la sémantique HTML5.</p>
+                    
+                    <details class="project-details">
+                        <summary class="btn-details">Voir les détails</summary>
+                        <div class="details-content">
+                            <p>Dans la SAÉ 1.01, j'ai programmé en C la possibilité de zoomer avec la touche '+', de dézoomer avec '-', et d'annuler des déplacements avec la touche 'u'. J'ai mémorisé la suite des centaines de déplacements en utilisant des caractères spécifiques (g, h, b, d pour le personnage seul, et G, H, B, D s'il pousse une caisse) stockés dans un tableau 1D de type <code>t_tabDeplacement</code>. En fin de partie, j'ai implémenté l'enregistrement de ces mouvements dans un fichier <code>.dep</code>. J'ai également conçu le site web sur le Royaume-Uni, en y intégrant un menu déroulant, des galeries, et des informations détaillées structurées en HTML et CSS.</p>
+                            <div class="gallery">
+                                <div class="gallery-item"><img src="Image/jeu.png" alt="Photo Sokoban" onerror="this.style.display='none'; this.parentNode.innerHTML='Photo Sokoban'"></div>
+                                <div class="gallery-item"><img src="Image/Site.png" alt="Photo Site Web" onerror="this.style.display='none'; this.parentNode.innerHTML='Photo Site HTML'"></div>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+            <div class="competence-wrapper reveal">
+                <div class="competence-inner">
+                    <h3>Compétence 2 : Optimiser des applications informatiques</h3>
+                    <p><strong>Mes traces :</strong> SAÉ 1.02 (Sokoban autonome et comparaison algorithmique).</p>
+                    <p><strong>Preuves de réussite :</strong> Écriture d'un programme automatisé capable de lire et exécuter des fichiers (.dep) sur des plateaux (.sok). Optimisation de l'affichage via l'intégration de temporisations d'exécution.</p>
+                    
+                    <details class="project-details">
+                        <summary class="btn-details">Voir les détails</summary>
+                        <div class="details-content">
+                            <p>Pour l'analyse algorithmique (SAÉ 1.02), j'ai écrit un programme qui "déroule" automatiquement une partie de Sokoban à partir des fichiers <code>fichier.sok</code> et <code>fichier.dep</code>. J'ai mis en place la procédure de lecture de fichiers <code>chargerDeplacements</code> pour transférer les éléments vers mon tableau. Pour permettre un suivi visuel confortable à l'écran, j'ai programmé une pause d'un quart de seconde après chaque mouvement grâce à la fonction <code>usleep(250000)</code>. Le code se chargeait ensuite de valider si la suite de déplacements constituait bien une solution ou non pour cette partie et d'afficher le nombre de mouvements.</p>
+                            <div class="gallery">
+                                <div class="gallery-item"><img src="Image/Sokoban.png" alt="Algorithme" onerror="this.style.display='none'; this.parentNode.innerHTML='Photo Code/Algorithme'"></div>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+            <div class="competence-wrapper reveal">
+                <div class="competence-inner">
+                    <h3>Compétence 3 : Administrer des systèmes complexes</h3>
+                    <p><strong>Mes traces :</strong> SAÉ 1.03 (Installation d'un poste de développement automatisé).</p>
+                    <p><strong>Preuves de réussite :</strong> Déploiement d'images Docker dédiées. Automatisation de chaînes de conversion de formats pour une ESN, via ssconvert, ImageMagick et WeasyPrint.</p>
+                    
+                    <details class="project-details">
+                        <summary class="btn-details">Voir les détails</summary>
+                        <div class="details-content">
+                            <p>Dans la SAÉ 1.03, j'ai été chargé d'automatiser des tâches répétitives de nettoyage et d'adaptation de données (textes, images, tableaux Excel) reçues de sources variées pour alimenter un site Web d'une ESN. Pour y parvenir, j'ai récupéré et utilisé des images Docker (avec la commande <code>docker image pull</code>) contenant des outils performants. J'ai ainsi scripté la conversion de tableaux Excel <code>.xlsx</code> en format CSV grâce à l'image <code>sae103-excel2csv</code> et sa commande <code>ssconvert</code>. J'ai géré le poids et les dimensions d'images au format WebP à l'aide de l'image <code>sae103-imagick</code> utilisant la commande <code>convert</code>, et utilisé <code>weasyprint</code> avec <code>sae103-html2pdf</code> pour la conversion de documents finaux.</p>
+                            <div class="gallery">
+                                <div class="gallery-item"><img src="Image/terminal.png" alt="Screenshot Docker/Terminal" onerror="this.style.display='none'; this.parentNode.innerHTML='Screenshot Docker/Terminal'"></div>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+            <div class="competence-wrapper reveal">
+                <div class="competence-inner">
+                    <h3>Compétence 4 : Gérer des données de l'information</h3>
+                    <p><strong>Mes traces :</strong> SAÉ 1.04 (Conception d'une BDD pour un comparateur d'électricité).</p>
+                    <p><strong>Preuves de réussite :</strong> Modélisation des plages horaires et tarifs dynamiques (Heures creuses virtuelles, Linky). Production du dictionnaire de données et d'un diagramme de classes UML complet.</p>
+                    
+                    <details class="project-details">
+                        <summary class="btn-details">Voir les détails</summary>
+                        <div class="details-content">
+                            <p>Pour cette SAÉ, l'objectif était de structurer une base de données pour une application comparant les offres tarifaires des fournisseurs d'électricité. Il a fallu modéliser avec précision des concepts comme les plages techniques définies par Enedis, les heures creuses virtuelles fixées dynamiquement sur le marché (indépendamment d'Enedis), ou encore les relevés précis fournis par le compteur Linky par pas d'une demi-heure. J'ai ainsi rédigé le dictionnaire de données, établi l'ensemble des dépendances fonctionnelles, et réalisé un diagramme de classes UML strict en définissant les règles de gestion complémentaires.</p>
+                            <div class="gallery">
+                                <div class="gallery-item"><img src="Image/uml.png" alt="Diagramme de classes UML" onerror="this.style.display='none'; this.parentNode.innerHTML='UML / Diagramme de classes'"></div>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+            <div class="competence-wrapper reveal">
+                <div class="competence-inner">
+                    <h3>Compétence 5 : Conduire un projet</h3>
+                    <p><strong>Mes traces :</strong> Gestion du double-projet (Sport de haut niveau et BUT), planification des livrables SAÉ.</p>
+                    <p><strong>Preuves de réussite :</strong> La discipline imposée par mes entraînements sur piste se reflète dans ma gestion du temps académique. Respect systématique des jalons stricts sur Moodle et rédaction méthodique de fichiers de suivi de projet.</p>
+                    
+                    <details class="project-details">
+                        <summary class="btn-details">Voir les détails</summary>
+                        <div class="details-content">
+                            <p>Savoir planifier à long terme m'a aidé à anticiper les phases de rush de la première année. J'ai respecté scrupuleusement le délai imparti et le format des documents pour mes dépôts sur Moodle. Dans la SAÉ 1.03 par exemple, j'ai géré la rédaction d'un fichier <code>PARTICIPATION.md</code> pour documenter les noms des tâches réalisées, le temps total alloué et le pourcentage d'implication de chaque membre de l'équipe, assurant ainsi un pilotage transparent.</p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+            <div class="competence-wrapper reveal">
+                <div class="competence-inner">
+                    <h3>Compétence 6 : Travailler dans une équipe informatique</h3>
+                    <p><strong>Mes traces :</strong> Projets collaboratifs (Site Web du Royaume-Uni en trinôme, travaux SAÉ 1.03).</p>
+                    <p><strong>Preuves de réussite :</strong> L'esprit "club" développé en athlétisme m'a permis de structurer efficacement la communication d'équipe. Synchronisation agile des tâches et processus de relecture croisée avant validation finale.</p>
+                    
+                    <details class="project-details">
+                        <summary class="btn-details">Voir les détails</summary>
+                        <div class="details-content">
+                            <p>La plupart des projets du S1, comme la SAÉ 1.03 sur l'installation du poste de développement, nécessitaient de constituer des équipes (3 ou 4 étudiants). L'important n'était pas seulement de se répartir le code, mais d'assurer la cohérence du livrable. Nous devions impérativement relire et valider l'ensemble du contenu en équipe avant qu'un seul membre identifié comme "responsable du dépôt" ne transmette le travail sur Moodle. J'ai également mis cette synchronisation à profit lors du projet de création du site web sur le Royaume-Uni réalisé en trinôme avec Timothée et Raphaël.</p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+        </section>
+
+        <section id="contact" class="reveal">
+            <h2>Me contacter</h2>
+            <p>Vous souhaitez échanger sur mon profil hybride tech/sport, mes projets ou mon parcours ? Vous pouvez me joindre directement :</p>
+            <ul class="contact-list">
+                <li><strong>Email :</strong> <a href="mailto:audric.morvannou@etudiant.univ-rennes.fr">audric.morvannou@etudiant.univ-rennes.fr</a></li>
+                <li><strong>LinkedIn :</strong> <a href="#" target="_blank">linkedin.com/in/audric-morvannou</a></li>
+                <li><strong>Localisation :</strong> Département Informatique, IUT de Lannion</li>
+            </ul>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Audric Morvannou - Portfolio Professionnel | BUT Informatique</p>
+    </footer>
+
+    <script>
+        // 1. Effet Halo souris
+        const glow = document.getElementById('glow');
+        window.addEventListener('mousemove', (e) => {
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+        });
+
+        // 2. Gestion lente de l'ouverture et fermeture des détails
+        document.querySelectorAll('.competence-wrapper').forEach(wrapper => {
+            let timeout;
+            const detailsElement = wrapper.querySelector('details');
+            if (!detailsElement) return;
+
+            const summary = detailsElement.querySelector('summary');
+            const content = detailsElement.querySelector('.details-content');
+
+            summary.addEventListener('click', (e) => {
+                if (detailsElement.hasAttribute('open')) {
+                    e.preventDefault(); 
+                    content.style.animation = 'fadeOut 0.6s ease forwards';
+                    setTimeout(() => {
+                        detailsElement.removeAttribute('open');
+                        content.style.animation = ''; 
+                    }, 550);
+                }
+            });
+
+            wrapper.addEventListener('mouseleave', () => {
+                if (detailsElement.hasAttribute('open')) {
+                    timeout = setTimeout(() => {
+                        content.style.animation = 'fadeOut 0.6s ease forwards';
+                        setTimeout(() => {
+                            if (!wrapper.matches(':hover')) { 
+                                detailsElement.removeAttribute('open');
+                                content.style.animation = '';
+                            }
+                        }, 550);
+                    }, 1500);
+                }
+            });
+
+            wrapper.addEventListener('mouseenter', () => {
+                if (timeout) {
+                    clearTimeout(timeout);
+                }
+                content.style.animation = ''; 
+            });
+        });
+
+        // 3. Effet d'apparition au défilement (Scroll Reveal Constant)
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealOptions = {
+            threshold: 0.20, 
+            rootMargin: "0px 0px -50px 0px"
+        };
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                } else {
+                    entry.target.classList.remove('active');
+                }
+            });
+        }, revealOptions);
+        revealElements.forEach(el => {
+            revealObserver.observe(el);
+        });
+
+        // 4. Système de Lightbox pour agrandir les images
+        const lightbox = document.createElement('div');
+        lightbox.className = 'lightbox';
+        lightbox.innerHTML = `
+            <span class="lightbox-close">&times;</span>
+            <img src="" alt="Zoom Image">
+        `;
+        document.body.appendChild(lightbox);
+
+        const lightboxImg = lightbox.querySelector('img');
+
+        // Ajouter le clic sur la photo de profil et toutes les images des galeries
+        document.querySelectorAll('.gallery-item img, .profile-pic').forEach(img => {
+            img.addEventListener('click', () => {
+                lightboxImg.src = img.src;
+                lightbox.classList.add('active');
+            });
+        });
+
+        // Fermer la lightbox au clic (sauf sur l'image elle-même)
+        lightbox.addEventListener('click', (e) => {
+            if (e.target !== lightboxImg) {
+                lightbox.classList.remove('active');
+            }
+        });
+    </script>
+
+</body>
+</html>
